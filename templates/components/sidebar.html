@@ -1,0 +1,70 @@
+<!-- Facilities Management Sidebar -->
+<div class="sidebar-brand">
+    Facilities Management
+</div>
+
+<div class="sidebar-section">
+    <div class="sidebar-section-title">Dashboard</div>
+    <a href="/ops" class="sidebar-link {% if active_nav == 'dashboard' %}active{% endif %}">
+        Overview
+    </a>
+</div>
+
+<div class="sidebar-section">
+    <div class="sidebar-section-title">FM Operations</div>
+    <a href="/fm/dashboard" class="sidebar-link {% if active_nav == 'fm_dashboard' %}active{% endif %}">
+        Console
+    </a>
+    <a href="/fm/dashboard#import" class="sidebar-link {% if active_nav == 'fm_import' %}active{% endif %}">
+        WhatsApp Import
+    </a>
+    <a href="/wa/monitor" class="sidebar-link {% if active_nav == 'wa_monitor' %}active{% endif %}">
+        WA Monitor
+    </a>
+</div>
+
+<div class="sidebar-section">
+    <div class="sidebar-section-title">Reports</div>
+    <a href="/artefacts/new" class="sidebar-link {% if active_nav == 'new_artefact' %}active{% endif %}">
+        + New Report
+    </a>
+    <a href="/artefacts?type=engagement" class="sidebar-link {% if active_nav == 'engagements' %}active{% endif %}">
+        Inspection Reports
+    </a>
+    <a href="/artefacts?type=incident" class="sidebar-link {% if active_nav == 'incidents' %}active{% endif %}">
+        Incident Reports
+    </a>
+    <a href="/artefacts?type=investigation" class="sidebar-link {% if active_nav == 'investigations' %}active{% endif %}">
+        Investigations
+    </a>
+    <a href="/artefacts?type=assessment" class="sidebar-link {% if active_nav == 'assessments' %}active{% endif %}">
+        Assessments
+    </a>
+</div>
+
+<div class="sidebar-section">
+    <div class="sidebar-section-title">Estates</div>
+    <a href="/fire-door" class="sidebar-link {% if active_nav == 'fire_door' %}active{% endif %}">
+        Estate Inspections
+    </a>
+</div>
+
+<div class="sidebar-section">
+    <div class="sidebar-section-title">Financials</div>
+    <a href="/financials/quote" class="sidebar-link {% if active_nav == 'quote' %}active{% endif %}">
+        Job Quote
+    </a>
+    <a href="/financials/invoice" class="sidebar-link {% if active_nav == 'invoice' %}active{% endif %}">
+        Invoice
+    </a>
+</div>
+
+<div class="sidebar-section">
+    <div class="sidebar-section-title">Databases</div>
+    <a href="/databases/clients" class="sidebar-link {% if active_nav == 'clients' %}active{% endif %}">
+        Clients
+    </a>
+    <a href="/databases/services" class="sidebar-link {% if active_nav == 'services' %}active{% endif %}">
+        Service Catalogue
+    </a>
+</div>

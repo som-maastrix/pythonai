@@ -1,0 +1,99 @@
+BUILD v0.2.8 - Production fixes: systemd, URL encoding, validation
+========================================================
+
+Date: 2026-03-06
+Status: PRODUCTION READY
+Previous Version: v0.2.5
+
+BATCH CF1.3 OBJECTIVE:
+======================
+
+✅ Guide users away from legacy pages through UI changes
+✅ Add deprecation banner on legacy contractor reports page
+✅ Update navigation to use Fire Door namespaced routes
+✅ Keep legacy routes accessible (no auto-redirect)
+✅ Template changes only - no backend modifications
+
+CHANGES MADE:
+=============
+
+UI/Template Changes (4 files):
+
+1. templates/contractor_reports.html
+   - Added prominent deprecation banner at top of page
+   - Banner text: "⚠️ Legacy Page - This is the deprecated contractor reports list"
+   - "Go to Fire Door Reports →" button linking to /fire-door/reports
+   - Styled with warning colors (yellow/orange)
+   - Reports list still displays below banner
+
+2. templates/components/topbar.html
+   - Updated "New Contractor Report" button
+   - Changed: /report/new → /fire-door/report/new
+
+3. templates/components/header.html
+   - Updated "+ New Report" button
+   - Changed: /report/new → /fire-door/report/new
+
+4. templates/components/report_card.html
+   - Updated "Open" button on report cards
+   - Changed: /report/{{ id }} → /fire-door/report/{{ id }}
+
+TECHNICAL DETAILS:
+==================
+
+Files Modified: 4 (templates only)
+Backend Files Changed: 0
+Routes Changed: 0
+Schema Changes: 0
+Migration Changes: 0
+Breaking Changes: 0
+New Features: 0
+
+BEHAVIOR CHANGES:
+=================
+
+Before:
+- /contractor-reports showed reports without warning
+- Navigation buttons used legacy routes (/report/*)
+- No indication that routes were deprecated
+
+After:
+- /contractor-reports shows deprecation banner with migration link
+- Navigation buttons use namespaced routes (/fire-door/report/*)
+- Clear guidance to use Fire Door Reports area
+- Legacy route still accessible via direct URL (backward compatible)
+
+VERIFICATION:
+=============
+
+User Flow Changes:
+✅ Click "+ New Report" → Goes to /fire-door/report/new
+✅ Click "Open" on report → Goes to /fire-door/report/{{ id }}
+✅ Visit /contractor-reports → Shows banner, still works
+✅ Click banner button → Goes to /fire-door/reports
+
+No Regression:
+✅ Legacy routes still accessible (no auto-redirect)
+✅ Fire Door namespaced pages unchanged
+✅ Engine routes unchanged
+✅ API endpoints unchanged
+✅ All functionality intact
+
+DEPLOYMENT:
+===========
+
+Drop-in replacement for v0.2.2
+- No database migration required
+- No configuration changes needed
+- Template files updated only
+- Backend code unchanged
+
+Upgrade Notes:
+- Users will see deprecation banner on /contractor-reports
+- Navigation automatically uses new routes
+- No action required from users
+- Existing bookmarks still work
+
+Version: 0.2.3
+Status: PRODUCTION READY
+Risk Level: VERY LOW (UI only)

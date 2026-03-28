@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Facilities Management{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/engine.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+    {% block extra_styles %}{% endblock %}
+
+<style>
+.icon { display:inline-block; vertical-align:middle; flex-shrink:0; }
+.icon-lg { width:32px; height:32px; }
+.icon-sm { width:14px; height:14px; }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        {% block sidebar %}{% endblock %}
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+            {% block topbar %}{% endblock %}
+        </div>
+        
+        <!-- Page Content -->
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</div>
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>
