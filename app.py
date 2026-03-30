@@ -701,13 +701,6 @@ def fire_door_tool():
 
 chat_sessions = {}
 
-def get_chat_session(user_id):
-
-    if "chat_history" not in session:
-        session["chat_history"] = []
-
-    return {"history": session["chat_history"]}
-
 def handle_chat(user_id, message):  
 
     # Store conversation history
