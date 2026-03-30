@@ -711,11 +711,8 @@ def get_chat_session(user_id):
 def handle_chat(user_id, message):  
     
 
-    session = get_chat_session(user_id)
 
     # Store conversation history
-    if "history" not in session:
-        session["history"] = []
 
     session["history"].append({"role": "user", "content": message})
     print("CHAT HISTORY:", session["history"])
@@ -768,7 +765,17 @@ IMPORTANT:
     ai_text = ai_text.replace("```", "").strip()
     
     session["history"].append({"role": "assistant", "content": ai_text})
-    session.modified = True
+
+    history = session.get("chat_history", [])
+
+history.append({
+    "role": "user",
+    "content": message
+})
+
+session["chat_history"] = history
+session.modified = True
+
 
     print("AI:", ai_text)
 
