@@ -709,8 +709,6 @@ def get_chat_session(user_id):
     return {"history": session["chat_history"]}
 
 def handle_chat(user_id, message):  
-    
-
 
     # Store conversation history
 
@@ -720,31 +718,31 @@ def handle_chat(user_id, message):
     # 🔥 Build conversation
     messages = [
         {
-    "role": "system",
-    "content": """
-You are a facility management assistant.
+        "role": "system",
+        "content": """
+        You are a facility management assistant.
 
-Your job:
-- Talk naturally
-- Extract:
-  name, flat, issue, urgency
+        Your job:
+        - Talk naturally
+        - Extract:
+        name, flat, issue, urgency
 
-RULES:
-- Never leave fields empty
-- Ask missing info step-by-step
-- When all info collected → return EXACT:
+        RULES:
+        - Never leave fields empty
+        - Ask missing info step-by-step
+        - When all info collected → return EXACT:
 
-CREATE_TICKET:
-name=...
-flat=...
-issue=...
-urgency=low/normal/urgent
+        CREATE_TICKET:
+        name=...
+        flat=...
+        issue=...
+        urgency=low/normal/urgent
 
-IMPORTANT:
-- urgency must be only: low, normal, urgent
-- issue must be clear (not 1 word)
-"""
-}
+        IMPORTANT:
+        - urgency must be only: low, normal, urgent
+        - issue must be clear (not 1 word)
+        """
+    }
     ] + session["history"]
 
     # 🔥 Call DeepSeek
@@ -768,84 +766,84 @@ IMPORTANT:
 
     history = session.get("chat_history", [])
 
-history.append({
-    "role": "user",
-    "content": message
-})
+    history.append({
+        "role": "user",
+        "content": message
+    })
 
-session["chat_history"] = history
-session.modified = True
+    session["chat_history"] = history
+    session.modified = True
 
 
-print("AI:", ai_text)
+    print("AI:", ai_text)
 
-# 🔥 CHECK IF READY TO CREATE TICKET
-if "CREATE_TICKET:" in ai_text:
+    # 🔥 CHECK IF READY TO CREATE TICKET
+    if "CREATE_TICKET:" in ai_text:
 
-    try:
-        # 🔥 CLEAN AI RESPONSE
-        ai_text = ai_text.replace("```", "").strip()
+        try:
+            # 🔥 CLEAN AI RESPONSE
+            ai_text = ai_text.replace("```", "").strip()
 
-        lines = ai_text.split("\n")
+            lines = ai_text.split("\n")
 
-        data = {}
+            data = {}
 
-        for line in lines:
+            for line in lines:
 
-            line_clean = line.strip().lower()
+                line_clean = line.strip().lower()
 
-            # Standard key=value format
-            if "=" in line:
-                k, v = line.split("=", 1)
-                data[k.strip().lower()] = v.strip()
+                # Standard key=value format
+                if "=" in line:
+                    k, v = line.split("=", 1)
+                    data[k.strip().lower()] = v.strip()
 
-            # Fallback: detect flat or address lines
-            if "flat" in line_clean and "flat" not in data:
-                value = line.split(":")[-1].strip()
-                data["flat"] = value
+                # Fallback: detect flat or address lines
+                if "flat" in line_clean and "flat" not in data:
+                    value = line.split(":")[-1].strip()
+                    data["flat"] = value
 
-            if "estate" in line_clean and "flat" not in data:
-                value = line.split(":")[-1].strip()
-                data["flat"] = value
+                if "estate" in line_clean and "flat" not in data:
+                    value = line.split(":")[-1].strip()
+                    data["flat"] = value
 
-        # 🔥 EXTRACT VALUES
-        name = (data.get("name") or "").strip()
-        flat = (data.get("flat") or "").strip()
-        issue = (data.get("issue") or "").strip()
-        urgency = (data.get("urgency") or "").lower().strip()
+            # 🔥 EXTRACT VALUES
+            name = (data.get("name") or "").strip()
+            flat = (data.get("flat") or "").strip()
+            issue = (data.get("issue") or "").strip()
+            urgency = (data.get("urgency") or "").lower().strip()
 
-        # 🔥 SMART NORMALIZATION
-        if "urgent" in urgency or "immediate" in urgency or "asap" in urgency:
-            urgency = "urgent"
-        elif "low" in urgency:
-            urgency = "low"
-        else:
-            urgency = "normal"
+            # 🔥 SMART NORMALIZATION
+            if "urgent" in urgency or "immediate" in urgency or "asap" in urgency:
+                urgency = "urgent"
+            elif "low" in urgency:
+                urgency = "low"
+            else:
+                urgency = "normal"
 
-        # 🔥 VALIDATION
-        if not name or len(name) < 2:
-            return "👤 Please tell me your name."
+            # 🔥 VALIDATION
+            if not name or len(name) < 2:
+                return "👤 Please tell me your name."
 
-        if not issue or len(issue) < 3:
-            return "🛠️ Please describe the issue clearly."
+            if not issue or len(issue) < 3:
+                return "🛠️ Please describe the issue clearly."
 
-        # 🔥 DEBUG
-        print("FINAL DATA:", name, flat, issue, urgency)
+            # 🔥 DEBUG
+            print("FINAL DATA:", name, flat, issue, urgency)
 
-        # 🔥 CREATE TICKET
-        ref = create_ticket(name, flat, issue, urgency)
+            # 🔥 CREATE TICKET
+            ref = create_ticket(name, flat, issue, urgency)
 
-        if ref:
-            chat_sessions.pop(user_id)
-            return f"✅ Ticket created!\nReference: {ref}"
-        else:
-            return "❌ Ticket creation failed. Please try again."
+            if ref:
+                chat_sessions.pop(user_id)
+                return f"✅ Ticket created!\nReference: {ref}"
+            else:
+                return "❌ Ticket creation failed. Please try again."
 
-    except Exception as e:
-        print("TICKET ERROR:", e)
-        return "❌ Ticket creation failed"
+        except Exception as e:
+            print("TICKET ERROR:", e)
+            return "❌ Ticket creation failed"
 
-return ai_text
+    return ai_text
 
 @app.route("/chat", methods=["POST"])
 def chat_api():
