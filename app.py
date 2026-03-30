@@ -777,7 +777,7 @@ session["chat_history"] = history
 session.modified = True
 
 
-    print("AI:", ai_text)
+print("AI:", ai_text)
 
     # 🔥 CHECK IF READY TO CREATE TICKET
     if "CREATE_TICKET:" in ai_text:
