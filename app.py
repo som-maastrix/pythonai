@@ -868,17 +868,23 @@ def chat_api():
             file_text = extract_text_from_document(file)
 
         full_message = message + "\n" + file_text
+        print("FINAL MESSAGE:", full_message)
 
         user_id = "web_user"
 
         reply = handle_chat(user_id, full_message)
+        print("REPLY:", reply)
 
-        return jsonify({"reply": reply})
+        return jsonify({"reply": reply or "No response"})
 
     except Exception as e:
-        print("CHAT ERROR:", e)
-        return jsonify({"reply": "❌ Server error: "})
+        import traceback
+        print("🔥 FULL ERROR:")
+        traceback.print_exc()
 
+        return jsonify({
+            "reply": str(e)
+        })
 @app.route("/wa/inbound", methods=["POST"])
 def wa_inbound_new():
 
