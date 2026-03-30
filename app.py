@@ -764,16 +764,6 @@ def handle_chat(user_id, message):
     
     session["history"].append({"role": "assistant", "content": ai_text})
 
-    history = session.get("chat_history", [])
-
-    history.append({
-        "role": "user",
-        "content": message
-    })
-
-    session["chat_history"] = history
-    session.modified = True
-
 
     print("AI:", ai_text)
 
