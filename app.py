@@ -39,10 +39,6 @@ load_dotenv()
 
 import google.generativeai as genai
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-print("Gemini Key:", GEMINI_API_KEY)
-genai.configure(api_key=GEMINI_API_KEY)
-
 import requests
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 
