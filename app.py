@@ -837,7 +837,7 @@ IMPORTANT:
             ref = create_ticket(name, flat, issue, urgency)
 
             if ref:
-                chat_sessions.pop(user_id)
+                chat_sessions.pop(user_id, None)
                 return f"✅ Ticket created!\nReference: {ref}"
             else:
                 return "❌ Ticket creation failed. Please try again."
