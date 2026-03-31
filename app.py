@@ -70,7 +70,7 @@ os.makedirs(os.path.join(os.path.dirname(__file__), 'static'), exist_ok=True)
 # Fire Door system uses its own database
 FIRE_DOOR_DB_PATH = 'fire_door_reports.db'
 # Engine system uses separate database (CF1.1: Physical split complete)
-ENGINE_DB_PATH = 'enginev2.db'
+ENGINE_DB_PATH = 'engine.db'
 ###################################
     
 def extract_text_from_document(file):
