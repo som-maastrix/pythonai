@@ -70,7 +70,7 @@ os.makedirs(os.path.join(os.path.dirname(__file__), 'static'), exist_ok=True)
 # Fire Door system uses its own database
 FIRE_DOOR_DB_PATH = 'fire_door_reports.db'
 # Engine system uses separate database (CF1.1: Physical split complete)
-ENGINE_DB_PATH = 'engine.db'
+ENGINE_DB_PATH = 'enginev2.db'
 ###################################
     
 def extract_text_from_document(file):
@@ -489,26 +489,18 @@ def run_fire_door_migrations(conn):
 
 
 def run_fm_migrations(conn):
-    """Run FM Operations migrations — idempotent, safe to call on every start."""
     print("  Running FM migrations...")
-    if not table_exists(conn, 'fm_tickets'):
-        print("  Creating FM tables from schema_fm.sql...")
-        schema_path = os.path.join(os.path.dirname(__file__), 'schema_fm.sql')
 
+    # Always attempt to create tables (safe if already exists)
+    schema_path = os.path.join(os.path.dirname(__file__), 'schema_fm.sql')
+
+    try:
         with open(schema_path, 'r') as f:
-            conn.executescript(f.read())
-            conn.executescript(f.read())
-        print("  ✓ FM tables created")
-    else:
-        print("  FM tables already exist")
-    # WA bridge tables
-    if not table_exists(conn, 'wa_sessions'):
-        print("  Creating WA bridge tables from schema_wa.sql...")
-        with open('schema_wa.sql', 'r') as f:
-            conn.executescript(f.read())
-        print("  ✓ WA bridge tables created")
-    else:
-        print("  WA bridge tables already exist")
+            sql = f.read()
+            conn.executescript(sql)
+        print("  ✓ FM tables ensured")
+    except Exception as e:
+        print("❌ FM migration error:", e)
     
 import uuid
 
