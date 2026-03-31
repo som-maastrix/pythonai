@@ -70,7 +70,7 @@ os.makedirs(os.path.join(os.path.dirname(__file__), 'static'), exist_ok=True)
 # Fire Door system uses its own database
 FIRE_DOOR_DB_PATH = 'fire_door_reports.db'
 # Engine system uses separate database (CF1.1: Physical split complete)
-ENGINE_DB_PATH = 'engine.db'
+ENGINE_DB_PATH = 'engine_v4.db'
 ###################################
     
 def extract_text_from_document(file):
@@ -350,9 +350,13 @@ def get_fire_door_db():
     return conn
 
 def get_engine_db():
-    """Get database connection for Engine/Artefact system"""
+     """Get database connection for Engine/Artefact system"""
     import os
     import sqlite3
+
+    conn = sqlite3.connect(ENGINE_DB_PATH)
+    conn.row_factory = sqlite3.Row
+    return conn
 
     db_path = os.path.join(os.path.dirname(__file__), "engine.db")
 
