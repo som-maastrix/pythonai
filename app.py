@@ -49,6 +49,14 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
 
 app = Flask(__name__)
+
+@app.before_request
+def initialize_database():
+    if not hasattr(app, "db_initialized"):
+        print("🔥 Running DB init...")
+        init_db()
+        app.db_initialized = True
+
 app.secret_key = os.getenv("SECRET_KEY")
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 app.config['UPLOAD_FOLDER'] = 'photos'
@@ -485,7 +493,10 @@ def run_fm_migrations(conn):
     print("  Running FM migrations...")
     if not table_exists(conn, 'fm_tickets'):
         print("  Creating FM tables from schema_fm.sql...")
-        with open('schema_fm.sql', 'r') as f:
+        schema_path = os.path.join(os.path.dirname(__file__), 'schema_fm.sql')
+
+        with open(schema_path, 'r') as f:
+            conn.executescript(f.read())
             conn.executescript(f.read())
         print("  ✓ FM tables created")
     else:
