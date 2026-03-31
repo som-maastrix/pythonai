@@ -358,14 +358,6 @@ def get_engine_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-    db_path = os.path.join(os.path.dirname(__file__), "engine.db")
-
-    print("DB PATH:", db_path)
-
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
-    return conn
-
 def get_db():
     """DEPRECATED: Use get_fire_door_db() or get_engine_db() instead
     For backward compatibility, defaults to engine DB"""
@@ -497,6 +489,10 @@ def run_fm_migrations(conn):
 
     # Always attempt to create tables (safe if already exists)
     schema_path = os.path.join(os.path.dirname(__file__), 'schema_fm.sql')
+
+    # 🔥 ADD THESE TWO LINES HERE
+    print("SCHEMA PATH:", schema_path)
+    print("FILE EXISTS:", os.path.exists(schema_path))
 
     try:
         with open(schema_path, 'r') as f:
