@@ -701,44 +701,51 @@ def fire_door_tool():
 
 chat_sessions = {}
 
-def handle_chat(user_id, message):  
+def handle_chat(user_id, message):
 
-    # Store conversation history
+    # ✅ FIX: Initialize session
+    if "history" not in session:
+        session["history"] = []
 
-    session["history"].append({"role": "user", "content": message})
+    # Store user message
+    session["history"].append({
+        "role": "user",
+        "content": message
+    })
+
     print("CHAT HISTORY:", session["history"])
 
-    # 🔥 Build conversation
+    # Build messages
     messages = [
         {
-        "role": "system",
-        "content": """
-        You are a facility management assistant.
+            "role": "system",
+            "content": """
+You are a facility management assistant.
 
-        Your job:
-        - Talk naturally
-        - Extract:
-        name, flat, issue, urgency
+Your job:
+- Talk naturally
+- Extract:
+name, flat, issue, urgency
 
-        RULES:
-        - Never leave fields empty
-        - Ask missing info step-by-step
-        - When all info collected → return EXACT:
+RULES:
+- Never leave fields empty
+- Ask missing info step-by-step
+- When all info collected → return EXACT:
 
-        CREATE_TICKET:
-        name=...
-        flat=...
-        issue=...
-        urgency=low/normal/urgent
+CREATE_TICKET:
+name=...
+flat=...
+issue=...
+urgency=low/normal/urgent
 
-        IMPORTANT:
-        - urgency must be only: low, normal, urgent
-        - issue must be clear (not 1 word)
-        """
-    }
+IMPORTANT:
+- urgency must be only: low, normal, urgent
+- issue must be clear (not 1 word)
+"""
+        }
     ] + session["history"]
 
-    # 🔥 Call DeepSeek
+    # Call DeepSeek
     response = requests.post(
         "https://api.deepseek.com/v1/chat/completions",
         headers={
@@ -752,14 +759,27 @@ def handle_chat(user_id, message):
         }
     )
 
-    ai_text = response.json()["choices"][0]["message"]["content"]
-    ai_text = ai_text.replace("```", "").strip()
-    
-    session["history"].append({"role": "assistant", "content": ai_text})
+    data = response.json()
 
+    # ✅ Safety check
+    if "choices" not in data:
+        print("DeepSeek ERROR:", data)
+        return "⚠️ AI error. Try again."
+
+    ai_text = data["choices"][0]["message"]["content"]
+    ai_text = ai_text.replace("```", "").strip()
+
+    # Store AI response
+    session["history"].append({
+        "role": "assistant",
+        "content": ai_text
+    })
+
+    session.modified = True  # ✅ important for Render
 
     print("AI:", ai_text)
 
+    # (rest of your ticket logic stays same)
     # 🔥 CHECK IF READY TO CREATE TICKET
     if "CREATE_TICKET:" in ai_text:
 
