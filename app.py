@@ -350,10 +350,7 @@ def get_fire_door_db():
     return conn
 
 def get_engine_db():
-     """Get database connection for Engine/Artefact system"""
-    import os
     import sqlite3
-
     conn = sqlite3.connect(ENGINE_DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
